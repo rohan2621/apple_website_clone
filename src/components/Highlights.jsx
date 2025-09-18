@@ -6,13 +6,24 @@ import VideoCarousel from './VideoCarousel'
 const Highlights = () => {
   useGSAP(() => {
     gsap.to('#title', {
+      scrollTrigger: {
+        trigger: '#title',
+
+      },
       opacity: 1,
-      y: 0
+      y: 0,
+      duration:.8
+
 
     }),
       gsap.to('.link', {
+        scrollTrigger: {
+          trigger: '.link',
+
+        },
         opacity: 1,
-        y: 0, duration: 1,
+        y: 0,
+        duration: .5,
         stagger: 0.25
 
       })

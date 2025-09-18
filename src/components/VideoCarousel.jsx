@@ -47,7 +47,7 @@ const VideoCarousel = () => {
                 startPlay && videoRef.current[videoId].play();
             }
         }
-    }, [startPlay, videoId, loadedData])
+    }, [startPlay, videoId, isPlaying, loadedData])
     const handleLoadedMetadata = (i, e) => {
         setloadedData((pre) => [...pre, e])
     }
@@ -118,14 +118,11 @@ const VideoCarousel = () => {
                 setvideo((pre) => ({ ...pre, isLastVideo: false, videoId: 0 }))
                 break;
             case 'play':
-                videoRef.current[videoId]?.play();
-                setvideo((pre) => ({ ...pre, isPlaying: true }));
+                setvideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }))
                 break;
             case 'pause':
-                videoRef.current[videoId]?.pause();
-                setvideo((pre) => ({ ...pre, isPlaying: false }));
+                setvideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }))
                 break;
-
 
             default:
                 break;
