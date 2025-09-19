@@ -1,44 +1,100 @@
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
-import React, { useRef, useState } from 'react'
-import ModelView from './ModelView'
-import { yellowImg } from '../utils'
-import * as THREE from 'three'
-const Model = () => {
-    const [size, setsize] = useState('small');
-    const [model, setmodel] = useState({
-        title: 'iPhone 15 pro in Natural Titanium',
-        color: ['#8F8A81', '#FFE7B9', '#6F6C64'],
-        img: yellowImg,
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import React, { useRef, useState } from "react";
+import ModelView from "./ModelView";
+import { yellowImg } from "../utils";
+import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { View } from "@react-three/drei";
+import { models } from "../constants";
 
-    })
+const Model = () => {
+    const [size, setsize] = useState("small");
+    const [model, setmodel] = useState({
+        title: "iPhone 15 pro in Natural Titanium",
+        color: ["#8F8A81", "#FFE7B9", "#6F6C64"],
+        img: yellowImg,
+    });
     //camera control
     const cameraControllSmall = useRef();
     const cameraControllLarge = useRef();
+    //model
     const small = useRef(new THREE.Group());
-    useGSAP(() => {
-        gsap.to('#heading', {
-            y: 0,
-            opacity: 1
-        })
+    const large = useRef(new THREE.Group());
+    //rotation
+    const [SmallRotation, setSmallRotation] = useState(0);
+    const [LargeRotation, setLargeRotation] = useState(0);
 
-    }
-        , [])
+    useGSAP(() => {
+        gsap.to("#heading", {
+            y: 0,
+            opacity: 1,
+        });
+    }, []);
     return (
-        <section className='common-padding'>
-            <div className='screen-max-width'>
-                <h1 id='heading' className='section-heading'>
+        <section className="common-padding">
+            <div className="screen-max-width">
+                <h1 id="heading" className="section-heading">
                     Take a closer look.
                 </h1>
-                <div className='flex flex-col items-center mt-5'>
-                    <div className='w-full h-[75vh] md:h-[90vh] overflow-hidden relative'>
-                        <ModelView />
+                <div className="flex flex-col items-center mt-5">
+                    <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
+                        <ModelView
+                            index={1}
+                            groupRef={small}
+                            gsapType={"view1"}
+                            controlRef={cameraControllSmall}
+                            setRotationState={setSmallRotation}
+                            item={model}
+                            size={size}
+                        />
+                        <ModelView
+                            index={2}
+                            groupRef={large}
+                            gsapType={"view2"}
+                            controlRef={cameraControllLarge}
+                            setRotationState={setLargeRotation}
+                            item={model}
+                            size={size}
+                        />
+                        <Canvas
+                            className="w-full h-full"
+                            style={{
+                                position: "fixed",
+                                top: 0,
+                                bottom: 0,
+                                right: 0,
+                                left: 0,
+                                overflow: "hidden",
+                            }}
+                            eventSource={document.getElementById("root")}
+                        >
+                            <View.port />
+                        </Canvas>
                     </div>
-
+                    <div className="mx-auto w-full">
+                        <p className="text-sm font-light  text-center mb-5">
+                            {model.title}
+                        </p>
+                        <div className="flex-center">
+                            <ul className="color-container">
+                                {models.map((e, i) => (
+                                    <li
+                                        key={i}
+                                        className="w-6 h-6 rounded-full mx-2"
+                                        style={{ backgroundColor: e.color[0] }}
+                                        onClick={() => {
+                                            setmodel(e);
+                                        }}
+                                    ></li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-    )
-}
+    );
+};
 
-export default Model
+export default Model;
